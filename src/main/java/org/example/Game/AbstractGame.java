@@ -41,19 +41,17 @@ public abstract  class AbstractGame {
                 }
             }
 
-            // Отступ между полями
             System.out.print("             ");
 
-            // Выводим строку поля противника
             System.out.print((rowNumber < 10 ? " " : "") + rowNumber + " ");
             for (int j = 0; j < boardSize; j++) {
                 if(opponentBoard.getCell(j,i)=='O'){
-                    System.out.print("[ ]");
+                    System.out.print("[O]");
                 }
                 else if (opponentBoard.getCell(j, i) == '.') {
-                    System.out.print("[.]"); // Если клетка содержит корабль или 'X', выводим '[X]'
+                    System.out.print("[.]");
                 } else if(opponentBoard.getCell(j,i)==' '||opponentBoard.getCell(j,i)=='*'){
-                    System.out.print("[ ]"); // В остальных случаях выводим пробел
+                    System.out.print("[ ]");
                 }else if(opponentBoard.getCell(j,i)=='X'){
                     System.out.print("[X]");
                 }

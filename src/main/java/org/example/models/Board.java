@@ -1,5 +1,6 @@
 package org.example.models;
 
+import org.example.utils.ConsoleUtil;
 import org.example.utils.Converter;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public class Board {
     }
 
   public void printBoard(){
+      ConsoleUtil.clearConsole();
       System.out.print("   ");
       for (int i = 0; i < SIZE; i++) {
           System.out.print(" " + (char)('A' + i) + " ");
@@ -52,11 +54,10 @@ public class Board {
               else if(getCell(j,i)=='.'){
                   System.out.print("[.]");
               }
-              /////
               else if (getCell(j, i) == '*') {
-                  System.out.print("[ ]"); // Если клетка содержит корабль или 'X', выводим '[X]'
+                  System.out.print("[ ]");
               } else if(getCell(j,i)==' '){
-                  System.out.print("[ ]"); // В остальных случаях выводим пробел
+                  System.out.print("[ ]");
               }else if(getCell(j,i)=='X'){
                   System.out.print("[X]");
               }
@@ -143,24 +144,17 @@ public class Board {
             int shipSize = shipType.getSize();
 
             for (int i = 0; i < shipType.getCount(); i++) {
-                //  String startX, startY;
                 Orientation orientation = random.nextBoolean() ? Orientation.HORIZONTAL : Orientation.VERTICAL;
 
-                // Генерация случайных координат
                 int startXNumber = 1+random.nextInt(board.getSize()-1);
                 int startYNumber =1+ random.nextInt(board.getSize()-1);
 
-//                 Проверка возможности размещения корабля
                 while (!checkShipPlacement(startXNumber, startYNumber, orientation, shipSize,board)) {
                     startXNumber =1+ random.nextInt(board.getSize()-1);
                     startYNumber =1+ random.nextInt(board.getSize()-1);
                 }
 
-                // Создание корабля и добавление на игровое поле
                 Ship ship = new Ship(Converter.convertNumberToLetter(startXNumber), String.valueOf(startYNumber), orientation, shipSize);
-                // System.out.println("Данные по кораблям из атаки"+"Данные по кораблю: "+"startX: "+ship.getStartX()+" startY: "+ship.getStartY()+" orientation "+ship.getOrientation()+" shipsize "+ship.getSize());
-
-
                 placeShipOnBoard(startXNumber,startYNumber,orientation,shipSize,board,ships);
                 board.markNearShips(board);
 
@@ -178,7 +172,6 @@ public class Board {
             for (int i = 0; i < shipType.getCount(); i++) {
                 String startX, startY;
 
-                // Проверка ввода координаты X
                 do {
                     System.out.println("Введите координаты начальной точки X (от A до P):");
                     startX = scanner.next().toUpperCase();
@@ -213,14 +206,12 @@ public class Board {
                 }
 
 
-                // Проверка на допустимые значения координат
                 if (startXNumber < 1 || startYNumber < 1 || startXNumber > board.getSize() || startYNumber > board.getSize()) {
                     System.out.println("Некорректные координаты. Повторите ввод.");
                     i--;
                     continue;
                 }
 
-                // Проверка на перекрытие кораблей и на наличие соседних кораблей
                 if (!checkShipPlacement(startXNumber, startYNumber, orientation, shipSize,board)) {
                     System.out.println("Некорректное расположение корабля. Повторите ввод.");
                     i--;
@@ -230,8 +221,8 @@ public class Board {
 
                 placeShipOnBoard(startXNumber,startYNumber,orientation,shipSize,board,ships);
                 board.markNearShips(board);
-                board.printBoard(); // Display the board after placing each ship
-                System.out.println("Ship was placed"); // Display the ship that has been placed
+                board.printBoard();
+                System.out.println("Ship was placed");
             }
         }
 
@@ -261,13 +252,10 @@ public class Board {
 
     }
     private boolean checkShipPlacement(int startXNumber, int startYNumber, Orientation orientation, int shipSize,Board board) {
-        // System.out.println("START X: "+startXNumber+" START Y: "+startYNumber);
-        // Проверка на пересечение с другими кораблями
-        int boardSize = board.getSize(); // Размер игрового поля (пример)
+        int boardSize = board.getSize();
 
         if (orientation == Orientation.HORIZONTAL) {
             if (startXNumber + shipSize-1 > boardSize) {
-                // System.out.println("Корабль выходит за пределы игрового поля по горизонтали");
                 return false;
             }
             for (int i = startXNumber-1; i < startXNumber + shipSize-1; i++) {
@@ -277,12 +265,10 @@ public class Board {
             }
         } else if (orientation == Orientation.VERTICAL) {
             if (startYNumber + shipSize-1 > boardSize) {
-                //  System.out.println("Корабль выходит за пределы игрового поля по вертикали");
 
                 return false;
             }
             for (int j = startYNumber-1; j < startYNumber + shipSize-1; j++) {
-                // System.out.println("J:"+j+" i: "+(startXNumber-1));
 
                 if (board.getCell(startXNumber-1, j) != ' ') {
 

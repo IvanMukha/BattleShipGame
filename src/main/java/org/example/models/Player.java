@@ -290,28 +290,26 @@ public class Player {
             botAttack(newX,newY);
         }
     }
-                private void attackAllDirections(int x, int y) {
-                    int[][] directions = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}}; // Направления: {влево, вправо, вверх, вниз}
-                    for (int[] direction : directions) {
-                        int dx = direction[0];
-                        int dy = direction[1];
-                        int newX = x + dx;
-                        int newY = y + dy;
-                        if (isValidCell(newX, newY, opponentBoard)) {
-                            if(attackedCells.containsKey(newX)){
-                                if(attackedCells.get(newX).equals(newY)){
-                                    continue;
-                                }
-                            }
-                            botAttack(newX, newY);
-                            if (opponentBoard.getCell(newX, newY) != 'O') {
-                                game.switchToPlayer();
-                                break;
-
-                            }
-                        }
-                    }
+    private void attackAllDirections(int x, int y) {
+        int[][] directions = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}};
+        for (int[] direction : directions) {
+            int dx = direction[0];
+            int dy = direction[1];
+            int newX = x + dx;
+            int newY = y + dy;
+            if (isValidCell(newX, newY, opponentBoard)) {
+                if(attackedCells.containsKey(newX)){
+                    if(attackedCells.get(newX).equals(newY)){
+                        continue;}
+                }
+                botAttack(newX, newY);
+                if (opponentBoard.getCell(newX, newY) != 'O') {
+                    game.switchToPlayer();
+                    break;
+                }
+            }
         }
+    }
         private boolean isValidCell(int x, int y,Board opponentBoard){
             if (x >= 0 && x < 16 && y >= 0 && y < 16 && opponentBoard.getCell(x, y) != '.')
                 return true;

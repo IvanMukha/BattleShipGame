@@ -36,7 +36,6 @@ public TwoPlayerGame(){
     player2.setBoard(new Board());
 
 }
-
     public  boolean allPlayerShipsDestroyed(Board board){
         int amountOfCellShips=0;
         for(int i=0;i<16;i++){

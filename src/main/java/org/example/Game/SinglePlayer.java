@@ -10,6 +10,8 @@ public class SinglePlayer extends AbstractGame {
     private Scanner in;
     private Player player;
     private Player botplayer;
+    boolean endGame = false;
+
     public SinglePlayer(){
         this.in=new Scanner(System.in);
 
@@ -26,8 +28,8 @@ public class SinglePlayer extends AbstractGame {
         player.setOpponentBoard(botplayer.getBoard());
 
         System.out.println("Выберите как расставить корабли");
-        System.out.println("1-В ручном режиме");
-        System.out.println("2-автоматическое заполнение");
+        System.out.println("1-Ручная расстановка корабелей на поле");
+        System.out.println("2-Автоматическое заполнение поля кораблями");
         int fillingMode=in.nextInt();
         while (true){
         if(fillingMode==1){
@@ -42,15 +44,13 @@ public class SinglePlayer extends AbstractGame {
             System.out.println("Введено не корректное значение. Повторите ввод");
 
         }
-
-
-        while (!allPlayerShipsDestroyed(player.getOpponentBoard())||!allPlayerShipsDestroyed(player.getOpponentBoard())){
-
-        if(!endGame()){
-            switchToPlayer();
-        }else break;
-
-        }
+        do {
+            if (!endGame()) {
+                switchToPlayer();
+            } else {
+                break;
+            }
+        } while (true);
 
     
     }

@@ -24,16 +24,14 @@
         private static volatile boolean isFinished = false;
         private static Scanner in;
         private String currentCell;
+        private static TwoPlayerGame twoPlayerGame;
+
 
         public static void setTwoPlayerGame(TwoPlayerGame twoPlayerGame) {
             WebSocketServerEndPoint.twoPlayerGame = twoPlayerGame;
             in=new Scanner(System.in);
 
         }
-
-        private static TwoPlayerGame twoPlayerGame;
-
-
 
         public static void startServer(int port,TwoPlayerGame twoPlayerGame) {
             setTwoPlayerGame(twoPlayerGame);
@@ -56,7 +54,6 @@
 
         @OnMessage
         public void onMessage(String message, Session session) throws IOException {
-
             if (message.length() < 50) {
                 if (message.startsWith("NAME_")) {
                     System.out.println("Игрок успешно подключился");
@@ -83,21 +80,22 @@
         }
         private void processAttackResult(String cell, Session session) throws IOException {
             char result=twoPlayerGame.getPlayer1().attackOpponentOnline(cell);
+            AbstractGame.printGame(twoPlayerGame.getPlayer1().getBoard(),twoPlayerGame.getPlayer2().getBoard());
+
             if (result=='O') {
-                System.out.printf("%s Противник попал \n", opponentName);
+                System.out.printf("%s Противник попал по вашему кораблю \n", opponentName);
             }
              else {
-            System.out.printf("Противник промахнулся");
+            System.out.printf("Противник не попопал в ваши корабли");
 
             }
-            AbstractGame.printGame(twoPlayerGame.getPlayer1().getBoard(),twoPlayerGame.getPlayer2().getBoard());
             session.getBasicRemote().sendText("Result_"+result);
 
         }
         private void handleLoseMessage(Session session) {
-            System.out.println("Quitting the game");
+            System.out.println("Выход из игры");
             try {
-                session.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "Game finished. " + twoPlayerGame.getPlayer2().getName() + " win the battle."));
+                session.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "Игра закончена. " + twoPlayerGame.getPlayer2().getName() + " Победил в игре."));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -115,19 +113,18 @@
             if (resultChar=='O') {
               if(currentCell!=null)  {
                   twoPlayerGame.getPlayer2().getBoard().updateCell(x-1,y-1,'X');}
-
-                System.out.println("Попадание по кораблю, можете атаковать ещё раз");
                 AbstractGame.printGame(twoPlayerGame.getPlayer1().getBoard(),twoPlayerGame.getPlayer2().getBoard());
+                System.out.println("Попадание по кораблю, можете атаковать ещё раз");
                 String attackcell= ServerUtils.readValidInput(in);
                 currentCell=attackcell;
                 session.getBasicRemote().sendText(attackcell);
             } else {
                 if(currentCell!=null)  {twoPlayerGame.getPlayer2().getBoard().updateCell(x-1,y-1,'.');}
-
+                AbstractGame.printGame(twoPlayerGame.getPlayer1().getBoard(),twoPlayerGame.getPlayer2().getBoard());
                 System.out.println("Вы не попали");
                 System.out.printf( "Ход переходит к другому игроку \n");
                 session.getBasicRemote().sendText("END_TURN");
-                AbstractGame.printGame(twoPlayerGame.getPlayer1().getBoard(),twoPlayerGame.getPlayer2().getBoard());
+
 
             }
         }
@@ -147,7 +144,7 @@
 
        // @Override
         public void onClose(Session session, CloseReason closeReason) {
-            System.out.printf("Session %s closed because of %s\n", session.getId(), closeReason);
+            System.out.printf("Сессия  %s была закрыта потому что  %s\n", session.getId(), closeReason);
             isFinished = true;
         }
 

@@ -1,0 +1,5 @@
+# Created at 2024-02-18T02:32:38.055
+Boot Manifest-JAR contains absolute paths in classpath 'D:\ProjectsJava\SenlaSeaBattle\target\test-classes'
+Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+'other' has different root
+

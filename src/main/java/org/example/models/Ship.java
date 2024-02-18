@@ -55,21 +55,21 @@ public class Ship {
         if (orientation == Orientation.HORIZONTAL) {
             for (int i = startXNumber - 1; i < startXNumber + size - 1; i++) {
                 if (board.getCell(i, startYNumber - 1) == 'O') {
-                    return false; // Найдена непораженная клетка корабля
+                    return false;
                 }
             }
         } else {
             for (int j = startYNumber - 1; j < startYNumber + size - 1; j++) {
                 if (board.getCell(startXNumber - 1, j) == 'O') {
 
-                    return false; // Найдена непораженная клетка корабля
+                    return false;
                 }
             }
 
         }
 
         System.out.println("Все клетки корабля были уничтожены ");
-        return true; // Все клетки корабля поражены
+        return true;
     }
     public boolean containsPoint(int x, int y) {
         int startXNumber = Converter.convertLetterToNumber(startX);
@@ -77,19 +77,18 @@ public class Ship {
 
         if (orientation == Orientation.HORIZONTAL) {
             if (startYNumber != y) {
-                return false; // Если y-координата не совпадает с начальной y-координатой корабля, точка не принадлежит кораблю
+                return false;
             }
-            return (x >= startXNumber && x < startXNumber + size); // Проверяем, лежит ли x-координата в пределах корабля
+            return (x >= startXNumber && x < startXNumber + size);
         } else {
             if (startXNumber != x) {
-                return false; // Если x-координата не совпадает с начальной x-координатой корабля, точка не принадлежит кораблю
+                return false;
             }
-            return (y >= startYNumber && y < startYNumber + size); // Проверяем, лежит ли y-координата в пределах корабля
+            return (y >= startYNumber && y < startYNumber + size);
         }
     }
 
 
 
 
-    // Дополнительные методы и функции класса Ship
 }

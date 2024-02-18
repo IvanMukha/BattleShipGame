@@ -72,9 +72,8 @@ public class WebSocketClientEndPoint {
         char resultChar = message.substring(message.indexOf("_") + 1).charAt(0);
         if (resultChar=='O') {
             if(currentCell!=null)  {twoPlayerGame.getPlayer1().getBoard().updateCell(x-1,y-1,'X');}
-            System.out.println("Попадание по кораблю, можете атаковать ещё раз");
             AbstractGame.printGame(twoPlayerGame.getPlayer2().getBoard(),twoPlayerGame.getPlayer1().getBoard());
-
+            System.out.println("Попадание по кораблю, можете атаковать ещё раз");
             String attackcell= ServerUtils.readValidInput(in);
             currentCell=attackcell;
             session.getBasicRemote().sendText(attackcell);
@@ -92,19 +91,19 @@ public class WebSocketClientEndPoint {
     private void handleAttackMessage(String message, Session session) throws IOException {
         currentCell =message;
         AbstractGame.printGame(twoPlayerGame.getPlayer2().getBoard(),twoPlayerGame.getPlayer1().getBoard());
-        System.out.printf("%s's turn\n", twoPlayerGame.getPlayer2().getName());
-        System.out.printf("%s attacked %s\n", twoPlayerGame.getPlayer2().getName(), message);
+        System.out.printf("Ход 2 игрока \n", twoPlayerGame.getPlayer2().getName());
+        System.out.printf("Игрок 2 атаковал %s\n", message);
         processAttackResult(currentCell, session);
     }
     private void processAttackResult(String cell, Session session) throws IOException {
          char result=twoPlayerGame.getPlayer2().attackOpponentOnline(cell);
+        AbstractGame.printGame(twoPlayerGame.getPlayer2().getBoard(),twoPlayerGame.getPlayer1().getBoard());
         if (result=='O') {
-            System.out.printf("%s Противник попал \n", opponentName);
+            System.out.printf("%s Противник повредил ваш корабль \n", opponentName);
         }
         else {
-            System.out.printf(twoPlayerGame.getPlayer1().getName()+"Промахнулся");
+            System.out.printf(twoPlayerGame.getPlayer1().getName()+"Противник не попал по вашим кораблям");
         }
-        AbstractGame.printGame(twoPlayerGame.getPlayer2().getBoard(),twoPlayerGame.getPlayer1().getBoard());
         session.getBasicRemote().sendText("Result_"+result);
 
     }
@@ -120,7 +119,7 @@ public class WebSocketClientEndPoint {
         }
 
     private void handleLostMessage(Session session) {
-        System.out.println("Quitting the game");
+        System.out.println("Выход из игры");
         try {
             session.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "Игра закончена. " + twoPlayerGame.getPlayer1().getName() + " Победил."));
         } catch (IOException e) {
@@ -149,7 +148,7 @@ public class WebSocketClientEndPoint {
     }
     @OnClose
     public void onClose(Session session, CloseReason closeReason) {
-        System.out.printf("Session %s closed because of %s\n", session.getId(), closeReason);
+        System.out.printf("Сессия %s была закрыта потому что %s\n", session.getId(), closeReason);
         latch.countDown();
     }
 

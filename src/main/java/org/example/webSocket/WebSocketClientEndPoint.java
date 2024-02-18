@@ -62,14 +62,25 @@ public class WebSocketClientEndPoint {
         }
 
     private void switchTurn(String message, Session session) throws IOException {
-
+        int x=0;
+        int y=0;
+        if(currentCell!=null){String letterPart = currentCell.substring(0, 1);
+            String numberPart = currentCell.substring(1);
+            x=Converter.convertLetterToNumber(letterPart);
+            y=Integer.parseInt(numberPart);
+        }
         char resultChar = message.substring(message.indexOf("_") + 1).charAt(0);
         if (resultChar=='O') {
+            if(currentCell!=null)  {twoPlayerGame.getPlayer1().getBoard().updateCell(x-1,y-1,'X');}
             System.out.println("Попадание по кораблю, можете атаковать ещё раз");
-            String attackcell= ServerUtils.readValidInput(in);
             AbstractGame.printGame(twoPlayerGame.getPlayer2().getBoard(),twoPlayerGame.getPlayer1().getBoard());
+
+            String attackcell= ServerUtils.readValidInput(in);
+            currentCell=attackcell;
             session.getBasicRemote().sendText(attackcell);
         } else {
+            if(currentCell!=null)  {
+                twoPlayerGame.getPlayer1().getBoard().updateCell(x-1,y-1,'.');}
             AbstractGame.printGame(twoPlayerGame.getPlayer2().getBoard(),twoPlayerGame.getPlayer1().getBoard());
             System.out.println("Вы не попали");
             System.out.printf(" Ход переходит к другому игроку \n", opponentName);
@@ -103,8 +114,9 @@ public class WebSocketClientEndPoint {
                 System.out.printf("%s Не попал!\n", opponentName);
             }
             System.out.println("Ваш ход");
-            String attackcell=ServerUtils.readValidInput(in);
-            session.getBasicRemote().sendText(attackcell);
+            String cellAttack=ServerUtils.readValidInput(in);
+            currentCell=cellAttack;
+            session.getBasicRemote().sendText(cellAttack);
         }
 
     private void handleLostMessage(Session session) {

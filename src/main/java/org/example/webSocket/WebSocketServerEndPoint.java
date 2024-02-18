@@ -103,14 +103,27 @@
             }
         }
         private void switchTurn(String message, Session session) throws IOException {
+            int x=0;
+            int y=0;
+           if(currentCell!=null){String letterPart = currentCell.substring(0, 1);
+               String numberPart = currentCell.substring(1);
+                x=Converter.convertLetterToNumber(letterPart);
+                y=Integer.parseInt(numberPart);
+           }
+
             char resultChar = message.substring(message.indexOf("_") + 1).charAt(0);
             if (resultChar=='O') {
+              if(currentCell!=null)  {
+                  twoPlayerGame.getPlayer2().getBoard().updateCell(x-1,y-1,'X');}
+
                 System.out.println("Попадание по кораблю, можете атаковать ещё раз");
                 AbstractGame.printGame(twoPlayerGame.getPlayer1().getBoard(),twoPlayerGame.getPlayer2().getBoard());
                 String attackcell= ServerUtils.readValidInput(in);
-                twoPlayerGame.getPlayer2().attackOpponentOnline(attackcell);;
+                currentCell=attackcell;
                 session.getBasicRemote().sendText(attackcell);
             } else {
+                if(currentCell!=null)  {twoPlayerGame.getPlayer2().getBoard().updateCell(x-1,y-1,'.');}
+
                 System.out.println("Вы не попали");
                 System.out.printf( "Ход переходит к другому игроку \n");
                 session.getBasicRemote().sendText("END_TURN");
@@ -125,6 +138,7 @@
             }
             System.out.println("Ваш ход");
             String cellAttack=ServerUtils.readValidInput(in);
+            currentCell=cellAttack;
             session.getBasicRemote().sendText(cellAttack);
         }
         public void onOpen(Session session, EndpointConfig config) {

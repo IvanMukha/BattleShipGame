@@ -25,8 +25,6 @@ public class SinglePlayer extends AbstractGame {
         player.setOpponentShips(botplayer.getShips());
         player.setOpponentBoard(botplayer.getBoard());
 
-
-
         System.out.println("Выберите как расставить корабли");
         System.out.println("1-В ручном режиме");
         System.out.println("2-автоматическое заполнение");

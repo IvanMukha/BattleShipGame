@@ -148,11 +148,20 @@ public class Player {
         String numberPart = cell.substring(1);
         int x=Converter.convertLetterToNumber(letterPart);
         int y=Integer.parseInt(numberPart);
+
         char result=board.getCell(x-1,y-1);
         if(result=='O'){
             board.updateCell(x-1,y-1,'X');
         }else
             board.updateCell(x-1,y-1,'.');
+        for (Ship ship : ships) {
+            if (ship.containsPoint(x, y)) {
+                System.out.println("shipCOntains");
+                if (ship.isShipDestroyed(board)) {
+                    System.out.println("ISshipdestoyed");
+                    board.surroundDestroyedShip(board,ship);}
+            }
+        }
         return result;
     }
     public void botAttack(int x,int y) {

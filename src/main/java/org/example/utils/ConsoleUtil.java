@@ -1,6 +1,6 @@
 package org.example.utils;
 
-public class ConsoleUtil {
+public  class ConsoleUtil {
     public static void clearConsole() {
         try {
             final String os = System.getProperty("os.name");

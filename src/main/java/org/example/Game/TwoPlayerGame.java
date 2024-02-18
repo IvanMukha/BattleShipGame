@@ -53,8 +53,18 @@ public TwoPlayerGame(){
     }
 
     public void startGame(String name) {
-
-        int port = 8888;
+    int port;
+        do {
+            System.out.println("Введите порт (5000-8000): ");
+            while (!in.hasNextInt()) {
+                System.out.println("Пожалуйста, введите целое число.");
+                in.next(); // Считываем и пропускаем некорректный ввод
+            }
+            port = in.nextInt();
+            if (port < 5000 || port > 8000) {
+                System.out.println("Порт должен быть в диапазоне от 5000 до 8000.");
+            }
+        } while (port < 5000 || port > 8000);
         if (isPortAvailable(port)) {
             player1.setName(name);
             WebSocketServerEndPoint.startServer(port,this);
@@ -65,13 +75,6 @@ public TwoPlayerGame(){
             WebSocketClientEndPoint.startClient(port,this);
         }
     }
-    public void AttackResponce(String name,String cell){
-    //if(nam)
-    }
-
-
-
-
 
 
 public void startForFirstPlayer(){

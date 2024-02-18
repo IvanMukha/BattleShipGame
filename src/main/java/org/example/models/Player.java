@@ -216,11 +216,9 @@ public class Player {
                     break;
 
             case 'X':
-                System.out.println("Уже атаковано по этим координатам.");
                 game.switchToPlayer2();
                 break;
             case '.':
-                System.out.println("Уже атаковано по этим координатам.");
                 game.switchToPlayer2();
                 break;
 

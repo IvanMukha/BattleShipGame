@@ -48,7 +48,7 @@ public class SinglePlayer extends AbstractGame {
 
         while (!allPlayerShipsDestroyed(player.getOpponentBoard())||!allPlayerShipsDestroyed(player.getOpponentBoard())){
 
-        if(endGame()){
+        if(!endGame()){
             switchToPlayer();
         }else break;
 

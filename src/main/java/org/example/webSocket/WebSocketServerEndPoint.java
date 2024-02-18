@@ -5,6 +5,8 @@
     import org.example.Game.AbstractGame;
     import org.example.Game.TwoPlayerGame;
     import org.example.models.Player;
+    import org.example.serverUtils.ServerUtils;
+    import org.example.utils.Converter;
     import org.glassfish.tyrus.server.Server;
 
     import java.io.IOException;
@@ -21,6 +23,7 @@
         private static String opponentName;
         private static volatile boolean isFinished = false;
         private static Scanner in;
+        private String currentCell;
 
         public static void setTwoPlayerGame(TwoPlayerGame twoPlayerGame) {
             WebSocketServerEndPoint.twoPlayerGame = twoPlayerGame;
@@ -56,14 +59,13 @@
 
             if (message.length() < 50) {
                 if (message.startsWith("NAME_")) {
+                    System.out.println("Игрок успешно подключился");
                     opponentName = message.substring(5);
                 } else if (message.equals("Lose")) {
                     handleLoseMessage(session);
                 } else if (message.matches("^[A-P][1-9]$|^[A-P]1[0-6]$")) {
-                    System.out.println("handleAttack " + message);
                     handleAttackMessage(message, session);
                 } else if (message.startsWith("Result_")) {
-                    System.out.println("message" + message);
                     switchTurn(message, session);
                 } else {
                     handleDefaultMessage(message, session);
@@ -74,10 +76,10 @@
 
         private void handleAttackMessage(String message, Session session) throws IOException {
             AbstractGame.printGame(twoPlayerGame.getPlayer1().getBoard(),twoPlayerGame.getPlayer2().getBoard());
-            String cell =message;
+            currentCell =message;
             System.out.printf("Ход второго игрока \n");
             System.out.printf( "Второй игрок атаковал  %s\n",  message);
-            processAttackResult(cell, session);
+            processAttackResult(currentCell, session);
         }
         private void processAttackResult(String cell, Session session) throws IOException {
             char result=twoPlayerGame.getPlayer1().attackOpponentOnline(cell);
@@ -103,9 +105,9 @@
         private void switchTurn(String message, Session session) throws IOException {
             char resultChar = message.substring(message.indexOf("_") + 1).charAt(0);
             if (resultChar=='O') {
-                System.out.println("Попадание по кораблю, можете атаковать ещё раз");;
+                System.out.println("Попадание по кораблю, можете атаковать ещё раз");
                 AbstractGame.printGame(twoPlayerGame.getPlayer1().getBoard(),twoPlayerGame.getPlayer2().getBoard());
-                String attackcell=in.next();
+                String attackcell= ServerUtils.readValidInput(in);
                 twoPlayerGame.getPlayer2().attackOpponentOnline(attackcell);;
                 session.getBasicRemote().sendText(attackcell);
             } else {
@@ -122,8 +124,7 @@
                 System.out.printf("%s Не попал!\n", opponentName);
             }
             System.out.println("Ваш ход");
-            String cellAttack=in.next();
-            System.out.println(cellAttack);
+            String cellAttack=ServerUtils.readValidInput(in);
             session.getBasicRemote().sendText(cellAttack);
         }
         public void onOpen(Session session, EndpointConfig config) {

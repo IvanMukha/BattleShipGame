@@ -52,7 +52,7 @@ public abstract  class AbstractGame {
             System.out.print((rowNumber < 10 ? " " : "") + rowNumber + " ");
             for (int j = 0; j < boardSize; j++) {
                 if(opponentBoard.getCell(j,i)=='O'){
-                    System.out.print("[O]");
+                    System.out.print("[ ]");
                 }
                 else if (opponentBoard.getCell(j, i) == '.') {
                     System.out.print("[.]"); // Если клетка содержит корабль или 'X', выводим '[X]'

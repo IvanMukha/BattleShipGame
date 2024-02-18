@@ -4,6 +4,8 @@ import jakarta.websocket.*;
 import org.example.Game.AbstractGame;
 import org.example.Game.TwoPlayerGame;
 import org.example.models.Ship;
+import org.example.serverUtils.ServerUtils;
+import org.example.utils.Converter;
 import org.glassfish.tyrus.client.ClientManager;
 
 import java.io.IOException;
@@ -19,8 +21,8 @@ import java.util.concurrent.CountDownLatch;
 public class WebSocketClientEndPoint {
     private static CountDownLatch latch;
     private  static TwoPlayerGame twoPlayerGame;
-    String opponentName;
-
+    private String opponentName;
+    private String currentCell;
 
     private static Scanner in;
 
@@ -63,10 +65,12 @@ public class WebSocketClientEndPoint {
 
         char resultChar = message.substring(message.indexOf("_") + 1).charAt(0);
         if (resultChar=='O') {
-            String attackcell=in.next();
-            twoPlayerGame.getPlayer2().attackOpponentOnline(attackcell);;
+            System.out.println("Попадание по кораблю, можете атаковать ещё раз");
+            String attackcell= ServerUtils.readValidInput(in);
+            AbstractGame.printGame(twoPlayerGame.getPlayer2().getBoard(),twoPlayerGame.getPlayer1().getBoard());
             session.getBasicRemote().sendText(attackcell);
         } else {
+            AbstractGame.printGame(twoPlayerGame.getPlayer2().getBoard(),twoPlayerGame.getPlayer1().getBoard());
             System.out.println("Вы не попали");
             System.out.printf(" Ход переходит к другому игроку \n", opponentName);
             session.getBasicRemote().sendText("END_TURN");
@@ -75,17 +79,11 @@ public class WebSocketClientEndPoint {
         }
     }
     private void handleAttackMessage(String message, Session session) throws IOException {
-        String cell =message;
-        System.out.println("Борд 2 игрока через getboard");
-        twoPlayerGame.getPlayer2().getBoard().printBoard();
-        System.out.println("Борд 2 игрока через opponentgetboard");
-        twoPlayerGame.getPlayer2().getOpponentBoard().printBoard();
-
-
+        currentCell =message;
         AbstractGame.printGame(twoPlayerGame.getPlayer2().getBoard(),twoPlayerGame.getPlayer1().getBoard());
         System.out.printf("%s's turn\n", twoPlayerGame.getPlayer2().getName());
         System.out.printf("%s attacked %s\n", twoPlayerGame.getPlayer2().getName(), message);
-        processAttackResult(cell, session);
+        processAttackResult(currentCell, session);
     }
     private void processAttackResult(String cell, Session session) throws IOException {
          char result=twoPlayerGame.getPlayer2().attackOpponentOnline(cell);
@@ -105,9 +103,7 @@ public class WebSocketClientEndPoint {
                 System.out.printf("%s Не попал!\n", opponentName);
             }
             System.out.println("Ваш ход");
-            String attackcell=in.next();
-            twoPlayerGame.getPlayer1().attackOpponentOnline(attackcell);;
-            System.out.println(attackcell);
+            String attackcell=ServerUtils.readValidInput(in);
             session.getBasicRemote().sendText(attackcell);
         }
 

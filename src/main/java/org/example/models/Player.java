@@ -1,6 +1,7 @@
 package org.example.models;
 
 
+import org.example.Game.AbstractGame;
 import org.example.Game.SinglePlayer;
 import org.example.utils.Converter;
 
@@ -11,7 +12,7 @@ public class Player {
     private Board board;
     private Board opponentBoard;
     private List<Ship> ships;
-    private SinglePlayer game;
+    private AbstractGame game;
     private int lastAttackedX=-1;
     private int lastAttackedY=-1;
     private int firstAttackX=-1;
@@ -52,7 +53,7 @@ public class Player {
 
 
 
-    public Player(String name, SinglePlayer game) {
+    public Player(String name, AbstractGame game) {
         this.name = name;
         this.board = new Board();
         this.ships = new ArrayList<>();
@@ -142,7 +143,21 @@ public class Player {
         }
 
     }
-
+    public char attackOpponentOnline(String cell){
+        String letterPart = cell.substring(0, 1);
+        String numberPart = cell.substring(1);
+        int x=Converter.convertLetterToNumber(letterPart);
+        int y=Integer.parseInt(numberPart);
+        System.out.println("X in func "+x);
+        System.out.println("Y in func "+y);
+        char result=board.getCell(x-1,y-1);
+        System.out.println(result+"<<<Функцияя атаки");
+        if(result=='O'){
+            board.updateCell(x-1,y-1,'X');
+        }else
+            board.updateCell(x-1,y-1,'.');
+        return result;
+    }
     public void botAttack(int x,int y) {
         try {
             Thread.sleep(1000);

@@ -23,6 +23,31 @@ public class Player {
     private List<Ship> opponentShips;
 
 
+
+    private Map<Integer,Integer> attackedCells;
+
+    public void setResult(String result) {
+        this.result = result;
+    }
+
+    private String result;
+    private String botResult;
+
+
+    public void setBotResult(String botResult) {
+        this.botResult = botResult;
+    }
+
+
+
+    public String getBotResult() {
+        return botResult;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -44,13 +69,10 @@ public class Player {
     }
 
 
-    private Map<Integer,Integer> attackedCells;
 
     public void setOpponentShips(List<Ship> opponentShips) {
         this.opponentShips = opponentShips;
     }
-
-
 
 
     public Player(String name, AbstractGame game) {
@@ -82,7 +104,7 @@ public class Player {
         }
         // Проверяем, что координаты находятся в пределах игрового поля соперника
         if (x < 0 || x > opponentBoard.getSize() || y < 0 || y > opponentBoard.getSize()) {
-            System.out.println("Некорректные координаты. Введите другие координаты.");
+            result="Некорректные координаты. Введите другие координаты.";
             game.switchToPlayer();
             return;
         }
@@ -93,13 +115,13 @@ public class Player {
         // Обрабатываем результат атаки в зависимости от содержимого клетки
         switch (attackResult) {
             case ' ':
-                System.out.println("Мимо.");
+                result="Мимо.";
                 opponentBoard.updateCell(x-1, y-1, '.');
                 game.switchToPlayer2();
                 break;
 
             case '*':
-                System.out.println("Мимо.");
+                result="Мимо.";
                 opponentBoard.updateCell(x-1, y-1, '.');
                 game.switchToPlayer2();
                 break;
@@ -110,11 +132,11 @@ public class Player {
                     if (ship.containsPoint(x, y)) {
                         if (ship.isShipDestroyed(opponentBoard)) {
                            opponentBoard.surroundDestroyedShip(opponentBoard,ship);
-                            System.out.println("Корабль убит!");
+                           result="Корабль убит!";
                             game.switchToPlayer();
                             break;
                         } else {
-                            System.out.println("Ранил.");
+                            result="Ранил.";
                             game.switchToPlayer();
                             break;
                         }
@@ -126,17 +148,17 @@ public class Player {
                 break;
 
             case 'X':
-                System.out.println("Уже атаковано по этим координатам.");
+                result="Уже атаковано по этим координатам.";
                 game.switchToPlayer();
                 break;
 
             case '.':
-                System.out.println("Уже атаковано по этим координатам.");
+                result="Уже атаковано по этим координатам.";
                 game.switchToPlayer();
                 break;
 
             default:
-                System.out.println("Ошибка: неожиданный символ на игровом поле соперника.");
+                result="Ошибка: неожиданный символ на игровом поле соперника.";
                 game.switchToPlayer();
                 break;
 
@@ -170,22 +192,23 @@ public class Player {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("Бот атаковал по координатам X:"+x+" Y: "+y);
+        botResult="";
+        String attackInfo = "Бот атаковал по координатам X:" + x + " Y: " + y + " Результат: ";
+
         char attackResult = opponentBoard.getCell(x, y);
             attackedCells.put(x,y);
         if (!isShipDestructionMode) {
             firstAttackX = x;
             firstAttackY = y;
         }
-
         switch (attackResult) {
             case ' ':
-                System.out.println("Мимо.");
+                botResult=attackInfo+" Мимо.";
                 opponentBoard.updateCell(x , y , '.');
                 game.switchToPlayer();
                 break;
             case '*':
-                System.out.println("Мимо.");
+                botResult+=attackInfo+" Мимо.";
                 opponentBoard.updateCell(x, y, '.');
                 game.switchToPlayer();
                 break;
@@ -199,7 +222,7 @@ public class Player {
                         if (ship.isShipDestroyed(opponentBoard)) {
 
                             opponentBoard.surroundDestroyedShip(opponentBoard, ship);
-                            System.out.println("Корабль убит!");
+                            botResult=attackInfo+"Корабль убит!";
                             isShipDestroyed=true;
                             isShipDestructionMode=false;
                             firstAttackX=-1;
@@ -208,7 +231,7 @@ public class Player {
                             game.switchToPlayer2();
                             break;
                         } else {
-                            System.out.println("Ранил.");
+                            botResult=attackInfo+"Ранил.";
                             isShipDestroyed=false;
                             isShipDestructionMode = true;
                             lastAttackedX=x;
@@ -232,7 +255,7 @@ public class Player {
                 break;
 
             default:
-                System.out.println("Ошибка: неожиданный символ на игровом поле соперника.");
+                botResult="Ошибка: неожиданный символ на игровом поле соперника.";
 
         }
     }

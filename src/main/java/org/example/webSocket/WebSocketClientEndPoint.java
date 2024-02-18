@@ -91,7 +91,7 @@ public class WebSocketClientEndPoint {
     private void handleAttackMessage(String message, Session session) throws IOException {
         currentCell =message;
         AbstractGame.printGame(twoPlayerGame.getPlayer2().getBoard(),twoPlayerGame.getPlayer1().getBoard());
-        System.out.printf("Ход 2 игрока \n", twoPlayerGame.getPlayer2().getName());
+        System.out.printf("Ход 2 игрока \n");
         System.out.printf("Игрок 2 атаковал %s\n", message);
         processAttackResult(currentCell, session);
     }
@@ -102,7 +102,7 @@ public class WebSocketClientEndPoint {
             System.out.printf("%s Противник повредил ваш корабль \n", opponentName);
         }
         else {
-            System.out.printf(twoPlayerGame.getPlayer1().getName()+"Противник не попал по вашим кораблям");
+            System.out.printf("Противник не попал по вашим кораблям");
         }
         session.getBasicRemote().sendText("Result_"+result);
 
@@ -110,7 +110,7 @@ public class WebSocketClientEndPoint {
     private void handleDefaultMessage(String message, Session session) throws IOException {
         AbstractGame.printGame(twoPlayerGame.getPlayer2().getBoard(),twoPlayerGame.getPlayer1().getBoard());
             if ("END_TURN".equals(message)) {
-                System.out.printf("%s Не попал!\n", opponentName);
+                System.out.printf("Противник не попал!\n");
             }
             System.out.println("Ваш ход");
             String cellAttack=ServerUtils.readValidInput(in);

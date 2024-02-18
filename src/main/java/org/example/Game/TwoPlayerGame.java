@@ -80,8 +80,8 @@ public void startForFirstPlayer(){
     player1.setOpponentBoard(player2.getBoard());
     player1.setOpponentShips(player2.getShips());
     System.out.println("Выберите как расставить корабли");
-    System.out.println("1-В ручном режиме");
-    System.out.println("2-автоматическое заполнение");
+    System.out.println("1-Ручная расстановка кораблей на поле");
+    System.out.println("2-Автоматическая расстановка кораблей на поле");
     int fillingMode=in.nextInt();
     while (true){
         if(fillingMode==1){

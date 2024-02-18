@@ -11,10 +11,10 @@ public class SinglePlayer extends AbstractGame {
     private Player player;
     private Player botplayer;
     boolean endGame = false;
+    String result;
 
     public SinglePlayer(){
         this.in=new Scanner(System.in);
-
     }
     public void startgame(String name){
         this.player=new Player(name,this);
@@ -28,8 +28,8 @@ public class SinglePlayer extends AbstractGame {
         player.setOpponentBoard(botplayer.getBoard());
 
         System.out.println("Выберите как расставить корабли");
-        System.out.println("1-Ручная расстановка корабелей на поле");
-        System.out.println("2-Автоматическое заполнение поля кораблями");
+        System.out.println("1-Ручная расстановка кораблей на поле");
+        System.out.println("2-Автоматическая расстановка кораблей на поле");
         int fillingMode=in.nextInt();
         while (true){
         if(fillingMode==1){
@@ -69,7 +69,15 @@ public class SinglePlayer extends AbstractGame {
         if(allOpponentShipsDestroyed(player.getOpponentBoard())){
             endGame();
         }
+
         printGame(player.getBoard(),botplayer.getBoard());
+        if(botplayer.getBotResult()!=null){
+            System.out.println(botplayer.getBotResult());
+        }
+        botplayer.setBotResult(null);
+        if(result!=null)
+            System.out.println("Игрок "+player.getName()+" : "+result);
+        player.setResult(null);
         System.out.println("Введите координату X: (от A до P)");
         String px=in.next();
         System.out.println("Введите координату Y: (от 1 до 16)");
@@ -83,14 +91,26 @@ public class SinglePlayer extends AbstractGame {
             endGame();
 
         }
+
         printGame(player.getBoard(),botplayer.getBoard());
+        String result= player.getResult();
+        if(result!=null)
+            System.out.println("Игрок "+player.getName()+" : "+result);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         Random random=new Random();
         if(botplayer.isShipDestructionMode()){
               botplayer.destructAttackedShip();
         }else{
         int px= random.nextInt(16);
         int py= random.nextInt(16);
-        botplayer.botAttack(px,py);}
+
+            botplayer.botAttack(px,py);}
+
     }
 
     public static boolean allOpponentShipsDestroyed(Board opponentBoard){

@@ -8,14 +8,13 @@ import java.util.Scanner;
 public class SeaBattleGame {
 
     public static void main(String[] args) {
-
+        System.out.println("Игра Морской бой");
         Scanner in = new Scanner(System.in);
         System.out.println("Введите имя игрока: ");
         String name=in.nextLine();
-        System.out.println("Игра Морской бой");
         System.out.println("Выберете режим игры:");
         System.out.println("1. Игра с напарником.");
-        System.out.println("2. Игра с компьютером.");
+        System.out.println("2. Игра с ботом.");
 
         while (true) {
             int gameMode = in.nextInt();

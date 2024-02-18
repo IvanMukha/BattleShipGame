@@ -9,10 +9,14 @@
 
     import java.io.IOException;
     import java.net.URI;
+    import java.util.Collections;
+    import java.util.HashSet;
     import java.util.Scanner;
+    import java.util.Set;
 
     @ServerEndpoint(value = "/battleship")
-    public class WebSocketServerEndPoint extends Endpoint {
+    public class WebSocketServerEndPoint  {
+
         private  Player player;
         private static String opponentName;
         private static volatile boolean isFinished = false;
@@ -34,7 +38,7 @@
             server = new Server("localhost", port, "/websockets", null, WebSocketServerEndPoint.class);
             try {
                 server.start();
-                System.out.println("---server is running and waiting players");
+                System.out.println("---Сервер запущен и ожидает игрока");
                 twoPlayerGame.startForFirstPlayer();
 
                 while (!isFinished) {
@@ -49,11 +53,12 @@
 
         @OnMessage
         public void onMessage(String message, Session session) throws IOException {
-            if (message.length() < 100) {
+
+            if (message.length() < 50) {
                 if (message.startsWith("NAME_")) {
                     opponentName = message.substring(5);
-                } else if (message.equals("LOST")) {
-                    handleLostMessage(session);
+                } else if (message.equals("Lose")) {
+                    handleLoseMessage(session);
                 } else if (message.matches("^[A-P][1-9]$|^[A-P]1[0-6]$")) {
                     System.out.println("handleAttack " + message);
                     handleAttackMessage(message, session);
@@ -66,10 +71,11 @@
             }
         }
 
+
         private void handleAttackMessage(String message, Session session) throws IOException {
             AbstractGame.printGame(twoPlayerGame.getPlayer1().getBoard(),twoPlayerGame.getPlayer2().getBoard());
             String cell =message;
-            System.out.printf("Ход второго игрока \n",
+            System.out.printf("Ход второго игрока \n");
             System.out.printf( "Второй игрок атаковал  %s\n",  message);
             processAttackResult(cell, session);
         }
@@ -86,7 +92,7 @@
             session.getBasicRemote().sendText("Result_"+result);
 
         }
-        private void handleLostMessage(Session session) {
+        private void handleLoseMessage(Session session) {
             System.out.println("Quitting the game");
             try {
                 session.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "Game finished. " + twoPlayerGame.getPlayer2().getName() + " win the battle."));
@@ -116,33 +122,23 @@
                 System.out.printf("%s Не попал!\n", opponentName);
             }
             System.out.println("Ваш ход");
-            System.out.println("default");
             String cellAttack=in.next();
             System.out.println(cellAttack);
             session.getBasicRemote().sendText(cellAttack);
         }
-        @Override
         public void onOpen(Session session, EndpointConfig config) {
 
         }
 
-        @Override
+       // @Override
         public void onClose(Session session, CloseReason closeReason) {
-            // Обработка закрытия соединения WebSocket
+            System.out.printf("Session %s closed because of %s\n", session.getId(), closeReason);
+            isFinished = true;
         }
 
-        @Override
-        public void onError(Session session, Throwable throwable) {
-            // Обработка ошибок WebSocket
-        }
-        private void sendToOpponent(String message) {
-            // Отправка сообщения оппоненту
-            // Например:
-            // opponentSession.getBasicRemote().sendText(message);
-        }
+
             private void handleNameMessage(String message, Session session) throws IOException {
                 opponentName = message.substring(5);
-                System.out.println("handlename");
                 session.getBasicRemote().sendText("NAME_" +twoPlayerGame.getPlayer1().getName() );
                 System.out.printf("Ход второго игрока \n");
             }

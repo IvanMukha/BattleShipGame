@@ -61,7 +61,6 @@ public TwoPlayerGame(){
 
         } else {
             player2.setName(name);
-            System.out.println("после сетнейма");
             System.out.println(player2.getName());
             WebSocketClientEndPoint.startClient(port,this);
         }
@@ -123,37 +122,7 @@ player2.setOpponentShips(player1.getShips());
     }
 }
 }
-//public void startGame(){
-//    while (true){
-//        switchToPlayer();
-//    }
-//}
-//    @Override
-//    public void switchToPlayer(){
-////        if(allOpponentShipsDestroyed(player.getOpponentBoard())){
-////            endGame();
-////        }
-//        printGame(player1.getBoard(),player2.getBoard());
-//        System.out.println("Введите координату X: (от A до P)");
-//        String px=in.next();
-//        System.out.println("Введите координату Y: (от 1 до 16)");
-//        String py=in.next();
-//        player1.attack(px,py);
-//
 
-//    }@Override
-//    public void switchToPlayer2(){
-////        if(allPlayerShipsDestroyed(player.getBoard())){
-////            endGame();
-////
-////        }
-//        printGame(player2.getBoard(),player1.getBoard());
-//        System.out.println("Введите координату X: (от A до P)");
-//        String px=in.next();
-//        System.out.println("Введите координату Y: (от 1 до 16)");
-//        String py=in.next();
-//        player2.attack(px,py);
-//    }
 
 
 

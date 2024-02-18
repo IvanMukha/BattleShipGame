@@ -47,19 +47,24 @@ public class SinglePlayer extends AbstractGame {
 
 
         while (!allPlayerShipsDestroyed(player.getOpponentBoard())||!allPlayerShipsDestroyed(player.getOpponentBoard())){
-        switchToPlayer();
 
+        if(endGame()){
+            switchToPlayer();
+        }else break;
 
         }
 
     
     }
-    public void endGame(){
+    public boolean endGame(){
         if(allPlayerShipsDestroyed(player.getBoard())){
             System.out.println("Бот победил!");
+            return true;
         }else if(allOpponentShipsDestroyed(player.getOpponentBoard())){
             System.out.println("Победил игрок: "+player.getName());
+            return true;
         }
+       return false;
     }
     @Override
     public void switchToPlayer(){

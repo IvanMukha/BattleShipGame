@@ -148,10 +148,7 @@ public class Player {
         String numberPart = cell.substring(1);
         int x=Converter.convertLetterToNumber(letterPart);
         int y=Integer.parseInt(numberPart);
-        System.out.println("X in func "+x);
-        System.out.println("Y in func "+y);
         char result=board.getCell(x-1,y-1);
-        System.out.println(result+"<<<Функцияя атаки");
         if(result=='O'){
             board.updateCell(x-1,y-1,'X');
         }else
@@ -232,12 +229,6 @@ public class Player {
 
         }
     }
-//    public void findNewShip(){
-//        Random random=new Random();
-//        int x=random.nextInt(16);
-//        int y=random.nextInt(16);
-//        botAttack(x,y);
-//    }
     public void destructAttackedShip(){
         if(attackfromStartXY){
             attackfromStartXY=false;

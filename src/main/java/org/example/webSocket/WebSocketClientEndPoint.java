@@ -9,7 +9,10 @@ import org.glassfish.tyrus.client.ClientManager;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
 @ClientEndpoint
@@ -17,6 +20,7 @@ public class WebSocketClientEndPoint {
     private static CountDownLatch latch;
     private  static TwoPlayerGame twoPlayerGame;
     String opponentName;
+
 
     private static Scanner in;
 
@@ -40,23 +44,21 @@ public class WebSocketClientEndPoint {
     }
     @OnMessage
     public void onMessage(String message, Session session) throws IOException {
-        if (message.length() < 100) {
-            if (message.startsWith("NAME_")) {
-                opponentName = message.substring(5);
-            } else if (message.equals("LOST")) {
-                handleLostMessage(session);
-            } else if (message.matches("^[A-P][1-9]$|^[A-P]1[0-6]$")) {
-                System.out.println("handleAttack " + message);
-                handleAttackMessage(message, session);
-            } else if (message.startsWith("Result_")) {
-                System.out.println("message:  " + message);
-                switchTurn(message, session);
-            } else {
-                handleDefaultMessage(message, session);
+            if (message.length() < 50) {
+                if (message.startsWith("NAME_")) {
+                    opponentName = message.substring(5);
+                } else if (message.equals("LOST")) {
+                    handleLostMessage(session);
+                } else if (message.matches("^[A-P][1-9]$|^[A-P]1[0-6]$")) {
+                    handleAttackMessage(message, session);
+                } else if (message.startsWith("Result_")) {
+                    switchTurn(message, session);
+                } else {
+                    handleDefaultMessage(message, session);
+                }
             }
         }
 
-    }
     private void switchTurn(String message, Session session) throws IOException {
 
         char resultChar = message.substring(message.indexOf("_") + 1).charAt(0);
@@ -74,6 +76,12 @@ public class WebSocketClientEndPoint {
     }
     private void handleAttackMessage(String message, Session session) throws IOException {
         String cell =message;
+        System.out.println("Борд 2 игрока через getboard");
+        twoPlayerGame.getPlayer2().getBoard().printBoard();
+        System.out.println("Борд 2 игрока через opponentgetboard");
+        twoPlayerGame.getPlayer2().getOpponentBoard().printBoard();
+
+
         AbstractGame.printGame(twoPlayerGame.getPlayer2().getBoard(),twoPlayerGame.getPlayer1().getBoard());
         System.out.printf("%s's turn\n", twoPlayerGame.getPlayer2().getName());
         System.out.printf("%s attacked %s\n", twoPlayerGame.getPlayer2().getName(), message);

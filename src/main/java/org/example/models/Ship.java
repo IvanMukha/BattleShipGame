@@ -61,7 +61,7 @@ public class Ship {
         } else {
             for (int j = startYNumber - 1; j < startYNumber + size - 1; j++) {
                 if (board.getCell(startXNumber - 1, j) == 'O') {
-                    System.out.println("найдена не поражённая клетка корабля");
+
                     return false; // Найдена непораженная клетка корабля
                 }
             }
